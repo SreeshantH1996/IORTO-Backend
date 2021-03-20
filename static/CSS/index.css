@@ -32,7 +32,7 @@ button {
   height: 550px;
   margin: 0 auto 100px;
   background: #fff;
-  margin-top: 1%;
+  margin-top: 4%;
 }
 
 .form {
@@ -238,7 +238,8 @@ input {
 
 .sign-up {
   transform: translate3d(-900px, 0, 0);
-  overflow-y: scroll;
+  /* overflow-y: scroll; */
+  margin-top: 19%;
 }
 .cont.s--signup .sign-up {
   transform: translate3d(0, 0, 0);
@@ -260,11 +261,12 @@ input {
 }
 
 .signup_form{
-  margin-left: 22%;
+  margin-left: 19%;
   width: 62%;
 }
 
 .form-control{
-  border: None !important;
+  /* border: None !important; */
+  border-bottom: 1px sold black;
   box-shadow: 0 0px 0px 0 rgb(0 0 0 / 1%), 0 6px 7px 0 rgb(0 0 0 / 5%);
 }

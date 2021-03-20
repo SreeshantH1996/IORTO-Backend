@@ -1,6 +1,7 @@
 {% extends "header.html" %}
 {% block body %}
 <div class="cont">
+  <!-- SIGN IN START -->
   <div class="form sign-in">
     <form>
       <h2 style="margin-left: 4%;margin-bottom: 2%; ">Welcome Back, <b style="color: green;">Login</b> to Continue</h2>
@@ -17,14 +18,17 @@
       </div>
     </form>
   </div>
+  <!-- SIGN IN END -->
+
+  <!-- SIDE CONTENT START -->
   <div class="sub-cont">
     <div class="img">
       <div class="img__text m--up">
-        <h2>New here?</h2>
+        <h1 style="font-family: fantasy;">IORTO</h1>
         <p>Sign up and discover great amount of new opportunities!</p>
       </div>
       <div class="img__text m--in">
-        <h2>One of us?</h2>
+        <h1 style="font-family: fantasy;">IORTO</h1>
         <p>If you already has an account, just sign in. We've missed you!</p>
       </div>
       <div class="img__btn">
@@ -33,56 +37,141 @@
       </div>
     </div>
     <div class="form sign-up">
-      <form>
-        <h2 style="margin-left: 4%;margin-bottom: 2%; ">Welcome, <b style="color: green;">Register</b> to Continue</h2>
-        <div class="signup_form">
-          <div class="form-group">
-            <label>Name</label>
-            <input type="email" class="form-control"  placeholder="Enter you name">
-          </div>
-          <div class="form-group">
-            <label for="exampleFormControlInput1">Email address</label>
-            <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="name@example.com">
-          </div>
-          <div class="form-group">
-            <label for="exampleFormControlSelect1">District</label>
-            <select class="form-control" id="exampleFormControlSelect1">
-              <option value="">Select and option</option>
-              <option value="Alappuzha">Alappuzha</option>
-              <option value="Ernakulam">Ernakulam</option>
-              <option value="Idukki">Idukki</option>
-              <option value="Kannur">Kannur</option>
-              <option value="Kasaragod">Kasaragod</option>
-              <option value="Kollam">Kollam</option>
-              <option value="Kottayam">Kottayam</option>
-              <option value="Kozhikode">Kozhikode</option>
-              <option value="Malappuram">Malappuram</option>
-              <option value="Palakkad">Palakkad</option>
-              <option value="Pathanamthitta">Pathanamthitta</option>
-              <option value="Thiruvananthapuram">Thiruvananthapuram</option>
-              <option value="Thrissur">Thrissur</option>
-              <option value="Wayanad">Wayanad</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>Username</label>
-            <input type="text" class="form-control"  placeholder="Enter a valid username">
-          </div>
-          <div class="form-group">
-            <label>Password</label>
-            <input type="password" class="form-control"  placeholder="***********">
-          </div>
-          <div class="form-group">
-            <label>Reneter the password</label>
-            <input type="password" class="form-control"  placeholder="***********">
-          </div>
-          <button type="button" class="submit">Sign Up</button>
-        </div>
-      </form>
+      <h2 style="margin-left: 4%;margin-bottom: 2%; ">Welcome, <b style="color: green;">Register</b> to Continue</h2>
+      <button style="background: #11770a;" type="button" class="submit" data-toggle="modal" data-target="#UserRegistartionModal">Reister as a User</button>
+      <button style="background: #11770a;" type="button" class="submit" data-toggle="modal" data-target="#RtoRegistartionModal">Reister as a RTO Officer</button>
+      
       <!-- <button type="button" class="fb-btn">Join with <span>facebook</span></button> -->
     </div>
   </div>
 </div>
+<!-- USER REGISTRATION MODAL START -->
+<div class="modal fade" id="UserRegistartionModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle"><b>User Registration</b></h5>
+        <button style="text-align: right;" type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="signup_form">
+            <div class="form-group">
+              <label>Name</label>
+              <input type="email" class="form-control"  placeholder="Enter you name">
+            </div>
+            <!-- <div class="form-group">
+              <label for="exampleFormControlInput1">Email address</label>
+              <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="name@example.com">
+            </div> -->
+            <div class="form-group">
+              <label for="exampleFormControlSelect1">District</label>
+              <select class="form-control" id="exampleFormControlSelect1">
+                <option value="">Select and option</option>
+                <option value="Alappuzha">Alappuzha</option>
+                <option value="Ernakulam">Ernakulam</option>
+                <option value="Idukki">Idukki</option>
+                <option value="Kannur">Kannur</option>
+                <option value="Kasaragod">Kasaragod</option>
+                <option value="Kollam">Kollam</option>
+                <option value="Kottayam">Kottayam</option>
+                <option value="Kozhikode">Kozhikode</option>
+                <option value="Malappuram">Malappuram</option>
+                <option value="Palakkad">Palakkad</option>
+                <option value="Pathanamthitta">Pathanamthitta</option>
+                <option value="Thiruvananthapuram">Thiruvananthapuram</option>
+                <option value="Thrissur">Thrissur</option>
+                <option value="Wayanad">Wayanad</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Username</label>
+              <input type="text" class="form-control"  placeholder="Enter a valid username">
+            </div>
+            <div class="form-group">
+              <label>Password</label>
+              <input type="password" class="form-control"  placeholder="***********">
+            </div>
+            <div class="form-group">
+              <label>Reneter the password</label>
+              <input type="password" class="form-control"  placeholder="***********">
+            </div>
+            <button type="button" class="submit">Sign Up</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- USER REGISTRATION MODAL END -->
+
+<!-- RTO REGISTRATION MODAL -->
+<div class="modal fade" id="RtoRegistartionModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle"><b>RTO Officer Registration</b></h5>
+        <button style="text-align: right;" type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="signup_form">
+            <div class="form-group">
+              <label>Name</label>
+              <input type="email" class="form-control"  placeholder="Enter you name">
+            </div>
+            <div class="form-group">
+              <label for="exampleFormControlInput1">Contact Number</label>
+              <input type="number" class="form-control" id="exampleFormControlInput1" placeholder="Enter a valid number">
+            </div>
+            <div class="form-group">
+              <label for="exampleFormControlInput1">Officer ID</label>
+              <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Enter a valid ID">
+            </div>
+            <div class="form-group">
+              <label for="exampleFormControlSelect1">District</label>
+              <select class="form-control" id="exampleFormControlSelect1">
+                <option value="">Select and option</option>
+                <option value="Alappuzha">Alappuzha</option>
+                <option value="Ernakulam">Ernakulam</option>
+                <option value="Idukki">Idukki</option>
+                <option value="Kannur">Kannur</option>
+                <option value="Kasaragod">Kasaragod</option>
+                <option value="Kollam">Kollam</option>
+                <option value="Kottayam">Kottayam</option>
+                <option value="Kozhikode">Kozhikode</option>
+                <option value="Malappuram">Malappuram</option>
+                <option value="Palakkad">Palakkad</option>
+                <option value="Pathanamthitta">Pathanamthitta</option>
+                <option value="Thiruvananthapuram">Thiruvananthapuram</option>
+                <option value="Thrissur">Thrissur</option>
+                <option value="Wayanad">Wayanad</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Username</label>
+              <input type="text" class="form-control"  placeholder="Enter a valid username">
+            </div>
+            <div class="form-group">
+              <label>Password</label>
+              <input type="password" class="form-control"  placeholder="***********">
+            </div>
+            <div class="form-group">
+              <label>Reneter the password</label>
+              <input type="password" class="form-control"  placeholder="***********">
+            </div>
+            <button type="button" class="submit">Sign Up</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- RTO REGISTRATION MODAL END -->
 <link rel="stylesheet" type="text/css" href="static/CSS/index.css">
 <script src="static\Scripts\index.js"></script>
 {% endblock %}
