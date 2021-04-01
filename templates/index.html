@@ -1,20 +1,29 @@
 {% extends "header.html" %}
+{% load  staticfiles %}
 {% block body %}
 <div class="cont">
   <!-- SIGN IN START -->
   <div class="form sign-in">
-    <form>
+    <form action="{% url 'registration:user_login' %}" enctype="multipart/form-data" method="POST" id="user_registrationfrom">{% csrf_token %}
       <h2 style="margin-left: 4%;margin-bottom: 2%; ">Welcome Back, <b style="color: green;">Login</b> to Continue</h2>
       <div class="signup_form">
         <div class="form-group">
           <label>Username</label>
-          <input type="text" class="form-control"  placeholder="Enter a valid username">
+          <input type="text" class="form-control"  placeholder="Enter a valid username" required>
         </div>
         <div class="form-group">
           <label>Password</label>
-          <input type="password" class="form-control"  placeholder="***********">
+          <input type="password" class="form-control"  placeholder="***********" required>
         </div>
-        <button type="button" class="submit">Sign Up</button>
+        <div class="form-group">
+          <label for="exampleFormControlSelect1">Login As<span style="color:red">*</span></label>
+          <select name="district" class="form-control" id="exampleFormControlSelect1" required>
+            <option value="user">User</option>
+            <option value="rtoofficer">RTO Officer</option>
+            <option value="admin">Admin</option>
+          </select>
+        </div>    
+        <button type="submit" class="submit">Sign Up</button>
       </div>
     </form>
   </div>
@@ -56,19 +65,23 @@
         </button>
       </div>
       <div class="modal-body">
-        <form>
+        <form action="{% url 'registration:user_registration' %}" enctype="multipart/form-data" method="POST" id="user_registrationfrom">{% csrf_token %}
           <div class="signup_form">
             <div class="form-group">
-              <label>Name</label>
-              <input type="email" class="form-control"  placeholder="Enter you name">
+              <label>Name<span style="color:red">*</span></label>
+              <input name="name" type="text" class="form-control"  placeholder="Enter you name" required>
             </div>
-            <!-- <div class="form-group">
-              <label for="exampleFormControlInput1">Email address</label>
-              <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="name@example.com">
-            </div> -->
             <div class="form-group">
-              <label for="exampleFormControlSelect1">District</label>
-              <select class="form-control" id="exampleFormControlSelect1">
+              <label>Address<span style="color:red">*</span></label>
+              <input name="address" type="text" class="form-control"  placeholder="Enter you address" required>
+            </div>
+            <div class="form-group">
+              <label>Age<span style="color:red">*</span></label>
+              <input name="age" type="number" class="form-control"  placeholder="Enter you age" required>
+            </div>
+            <div class="form-group">
+              <label for="exampleFormControlSelect1">District<span style="color:red">*</span></label>
+              <select name="district" class="form-control" id="exampleFormControlSelect1" required>
                 <option value="">Select and option</option>
                 <option value="Alappuzha">Alappuzha</option>
                 <option value="Ernakulam">Ernakulam</option>
@@ -87,18 +100,21 @@
               </select>
             </div>
             <div class="form-group">
-              <label>Username</label>
-              <input type="text" class="form-control"  placeholder="Enter a valid username">
+              <label>Username<span style="color:red">*</span></label>
+              <input name="username" type="text" class="form-control"  placeholder="Enter a valid username" required>
             </div>
             <div class="form-group">
-              <label>Password</label>
-              <input type="password" class="form-control"  placeholder="***********">
+              <label>Password<span style="color:red">*</span></label>
+              <input name="password" type="password" class="form-control"  placeholder="***********" required>
             </div>
-            <div class="form-group">
-              <label>Reneter the password</label>
-              <input type="password" class="form-control"  placeholder="***********">
-            </div>
-            <button type="button" class="submit">Sign Up</button>
+            <!-- <div class="form-group">
+              <label>Enter the password<span style="color:red">*</span></label>
+              <input name="re-password" type="password" class="form-control"  placeholder="***********" required>
+            </div> -->
+            <!-- <div class="form-group" style="margin-left: 12%;display: None;" id="error_message">
+              <b>All fields marked as <span style="color:red">*</span> are required</b>
+            </div> -->
+            <button type="submit"class="submit">Sign Up</button>
           </div>
         </form>
       </div>
