@@ -19,7 +19,7 @@ district_choices = [
 ]
 
 
-class Person(models.Model):
+class StandUser(models.Model):
     name = models.CharField(max_length=50, null=False, blank=False)
     address = models.CharField(max_length=50, null=False, blank=False, default="test")
     age = models.IntegerField(null=False, blank=False, default="1")

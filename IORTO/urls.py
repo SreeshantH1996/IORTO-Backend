@@ -5,6 +5,7 @@ from registration import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', views.home, name='home'),
-    path('', include(('registration.urls', 'registration'), namespace='registration'))
+    path('', include(('registration.urls', 'registration'), namespace='registration')),
+    path('api-auth/', include('rest_framework.urls')),
+
 ]
