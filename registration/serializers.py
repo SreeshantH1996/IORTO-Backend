@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from registration.models import LicenceApplication
+from registration.models import LicenceApplication, UserDocuments
 
 
 class ApplicationDetails(serializers.ModelSerializer):
@@ -12,3 +12,9 @@ class ApplicationDetails(serializers.ModelSerializer):
 
     def get_dob(self, obj):
         return obj.dob.strftime("%Y-%m-%d")
+
+
+class DocumentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserDocuments
+        fields = "__all__"

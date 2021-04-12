@@ -18,6 +18,14 @@ district_choices = [
     ('Wayanad', 'Wayanad')
 ]
 
+user_status = [
+    ("Application Filled", "Application Filled"),
+    ("Documents Uploaded", "Documents Uploaded"),
+    ("Payment Completed, Waiting for approval", "Payment Completed, Waiting for approval"),
+    ("Approved", "Approved"),
+    ("Not yet Applied", "Not yet Applied"),
+]
+
 
 class StandUser(models.Model):
     name = models.CharField(max_length=50, null=False, blank=False)
@@ -26,6 +34,8 @@ class StandUser(models.Model):
     district = models.CharField(choices=district_choices, verbose_name='Order Status', max_length=50)
     username = models.CharField(max_length=50, unique=True, null=False, blank=False)
     password = models.CharField(max_length=50, null=False, blank=False)
+    user_status = models.CharField(choices=user_status, verbose_name='User Status', default="Not yet Applied",
+                                   max_length=500)
 
 
 class RtoOfficer(models.Model):
@@ -65,3 +75,19 @@ class LicenceApplication(models.Model):
     trvillage = models.CharField(max_length=100, null=False, blank=False)
     trtaluk = models.CharField(max_length=100, null=False, blank=False)
     classofvehicle = models.CharField(max_length=100, null=False, blank=False)
+
+
+class UserDocuments(models.Model):
+    user = models.ForeignKey(StandUser, null=False, on_delete=models.CASCADE)
+
+    identitycertificate = models.FileField(blank=True, null=True, upload_to='static/Files/%Y/%m/%d/',
+                                           verbose_name='identification certificate')
+    identitytype = models.CharField(max_length=50, null=True, blank=True)
+    eyecertificate = models.FileField(blank=True, null=True, upload_to='static/Files/%Y/%m/%d/',
+                                      verbose_name='eye certificate')
+    selfcertificate = models.FileField(blank=True, null=True, upload_to='static/Files/%Y/%m/%d/',
+                                       verbose_name='self certificate')
+    photo = models.ImageField(blank=True, null=True, upload_to='static/Images/Photo/',
+                              verbose_name='photo')
+    signature = models.FileField(blank=True, null=True, upload_to='static/Images/Signature/',
+                                 verbose_name='signature ')

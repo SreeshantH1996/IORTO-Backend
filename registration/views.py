@@ -2,8 +2,8 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from registration.models import StandUser, LicenceApplication
-from registration.serializers import ApplicationDetails
+from registration.models import StandUser, LicenceApplication, UserDocuments
+from registration.serializers import ApplicationDetails, DocumentSerializer
 
 
 class UserLoginApiView(APIView):
@@ -146,6 +146,8 @@ class ApplicationForNewLicence(APIView):
                         application.trvillage = data.get("village")
                         application.trtaluk = data.get("taluk")
                     application.save()
+                    user.user_status = "Application Filled"
+                    user.save()
                     return Response({
                         'data': {
                             'message': "Data Updated successfully",
@@ -191,6 +193,8 @@ class ApplicationForNewLicence(APIView):
                         application.trvillage = data.get("village")
                         application.trtaluk = data.get("taluk")
                         application.save()
+                    user.user_status = "Application Filled"
+                    user.save()
                     return Response({
                         'data': {
                             'message': "Data Updated successfully",
@@ -220,9 +224,12 @@ class GetUserDetails(APIView):
             data = request.data
             user = StandUser.objects.filter(id=data.get("user_id")).first()
             if user:
-                application =LicenceApplication.objects.filter(user=user).first()
+                application = LicenceApplication.objects.filter(user=user).first()
+                document_details = UserDocuments.objects.filter(user=user).first()
+
                 print(f"DATA -{LicenceApplication.dob}")
                 details_serializer = ApplicationDetails(application)
+                document_serializer = DocumentSerializer(document_details)
                 try:
                     print(dir(details_serializer.data))
                 except Exception as e:
@@ -230,8 +237,120 @@ class GetUserDetails(APIView):
                 return Response({
                     'data': {
                         'data': details_serializer.data,
-                        'message': f'Data fetch successfull',
+                        'documents': document_serializer.data,
+                        'message': f'Data fetch successfully',
                         'status': True
+                    }
+                })
+        except Exception as e:
+            return Response({
+                'data': {
+                    'message': f'Exception occured - {str(e)}',
+                    'status': False
+                }
+            })
+
+
+class DocumentUpload(APIView):
+
+    def post(self, request):
+        try:
+            data = request.data
+            user = StandUser.objects.filter(id=data.get("user_id")).first()
+            if user:
+                if UserDocuments.objects.filter(user=user).exists():
+                    document_details = UserDocuments.objects.filter(user=user).first()
+                    document_details.identitycertificate = data.get("identityproof")
+                    document_details.eyecertificate = data.get("eyecertificate")
+                    document_details.selfcertificate = data.get("selfdeclarationfrom")
+                    document_details.photo = data.get("photo")
+                    document_details.signature = data.get("signature")
+                    document_details.identitytype = data.get("identity_type")
+                    document_details.save()
+                else:
+                    UserDocuments.objects.create(
+                        user=user,
+                        identitycertificate=data.get("identityproof"),
+                        eyecertificate=data.get("eyecertificate"),
+                        selfcertificate=data.get("selfdeclarationfrom"),
+                        photo=data.get("photo"),
+                        signature=data.get("signature"),
+                        identitytype=data.get("identity_type"),
+                    )
+                user.user_status = "Documents Uploaded"
+                user.save()
+                return Response({
+                    'data': {
+                        'message': "Files uploaded successfully",
+                        'status': True
+                    }
+                })
+            else:
+                return Response({
+                    'data': {
+                        'message': f'User not found, Something went wrong',
+                        'status': False
+                    }
+                })
+        except Exception as e:
+            return Response({
+                'data': {
+                    'message': f'Exception occured - {str(e)}',
+                    'status': False
+                }
+            })
+
+
+class GetUserStatus(APIView):
+    def post(self, request):
+        try:
+            data = request.data
+            user = StandUser.objects.filter(id=data.get("user_id")).first()
+            if user:
+                return Response({
+                    'data': {
+                        'user_status': user.user_status,
+                        'message': f'Status fetched successfully',
+                        'status': True
+                    }
+                })
+            else:
+                return Response({
+                    'data': {
+                        'message': "Something went wrong",
+                        'status': False
+                    }
+                })
+        except Exception as e:
+            return Response({
+                'data': {
+                    'message': f'Exception occured - {str(e)}',
+                    'status': False
+                }
+            })
+
+
+class UserStatusUpdate(APIView):
+
+    def post(self, request):
+        try:
+            data = request.data
+            user = StandUser.objects.filter(id=data.get("user_id")).first()
+            if user:
+                user.user_status = data.get("status")
+                user.save()
+                return Response({
+                    'data': {
+                        'user_status': user.user_status,
+                        'message': f'Status updated successfully',
+                        'status': True
+                    }
+                })
+            else:
+                return Response({
+                    'data': {
+                        'message': "Something went wrong",
+                        'status': False
                     }
                 })
         except Exception as e:
