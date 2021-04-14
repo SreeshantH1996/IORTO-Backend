@@ -31,20 +31,22 @@ class StandUser(models.Model):
     name = models.CharField(max_length=50, null=False, blank=False)
     address = models.CharField(max_length=500, null=False, blank=False, default="test")
     age = models.IntegerField(null=False, blank=False, default="1")
+    phnumber = models.CharField(max_length=10, null=True, blank=True)
     district = models.CharField(choices=district_choices, verbose_name='Order Status', max_length=50)
     username = models.CharField(max_length=50, unique=True, null=False, blank=False)
     password = models.CharField(max_length=50, null=False, blank=False)
     user_status = models.CharField(choices=user_status, verbose_name='User Status', default="Not yet Applied",
                                    max_length=500)
+    renewal_status = models.CharField(max_length=50, null=True, blank=True)
 
 
 class RtoOfficer(models.Model):
-    name = models.CharField(max_length=50, null=False, blank=False)
+    name = models.CharField(max_length=50, null=True, blank=True)
     phnumber = models.CharField(max_length=10, null=True, blank=True)
     officerid = models.CharField(max_length=30, null=False, blank=False)
     district = models.CharField(choices=district_choices, verbose_name='Order Status', max_length=50)
-    username = models.CharField(max_length=50, unique=True, null=False, blank=False)
-    password = models.CharField(max_length=50, null=False, blank=False)
+    username = models.CharField(max_length=50, null=True, blank=True)
+    password = models.CharField(max_length=50, null=True, blank=True)
 
 
 class LicenceApplication(models.Model):
@@ -85,9 +87,41 @@ class UserDocuments(models.Model):
     identitytype = models.CharField(max_length=50, null=True, blank=True)
     eyecertificate = models.FileField(blank=True, null=True, upload_to='static/Files/%Y/%m/%d/',
                                       verbose_name='eye certificate')
+    medicalcertificate = models.FileField(blank=True, null=True, upload_to='static/Files/%Y/%m/%d/',
+                                          verbose_name='medical certificate')
     selfcertificate = models.FileField(blank=True, null=True, upload_to='static/Files/%Y/%m/%d/',
                                        verbose_name='self certificate')
     photo = models.ImageField(blank=True, null=True, upload_to='static/Images/Photo/',
                               verbose_name='photo')
     signature = models.FileField(blank=True, null=True, upload_to='static/Images/Signature/',
                                  verbose_name='signature ')
+
+
+class OtherDocuments(models.Model):
+    user = models.ForeignKey(StandUser, null=False, on_delete=models.CASCADE)
+    document_name = models.CharField(max_length=100, null=True, blank=True)
+    document = models.FileField(blank=True, null=True, upload_to='static/Files/Other_Documents',
+                                verbose_name='other document')
+
+
+class LicenceRenewalApplication(models.Model):
+    user = models.ForeignKey(StandUser, null=False, on_delete=models.CASCADE)
+    district = models.CharField(choices=district_choices, verbose_name='Order Status', max_length=50)
+    phnumber = models.CharField(max_length=50, null=True, blank=True)
+    name = models.CharField(max_length=50, null=False, blank=False)
+    dob = models.DateTimeField(null=False, blank=False)
+    prhousename = models.CharField(max_length=100, null=False, blank=False)
+    prstreet = models.CharField(max_length=100, null=False, blank=False)
+    prlocation = models.CharField(max_length=100, null=False, blank=False)
+    prpincode = models.CharField(max_length=100, null=False, blank=False)
+    prvillage = models.CharField(max_length=100, null=False, blank=False)
+    prtaluk = models.CharField(max_length=100, null=False, blank=False)
+    trhousename = models.CharField(max_length=100, null=False, blank=False)
+    tstreet = models.CharField(max_length=100, null=False, blank=False)
+    trlocation = models.CharField(max_length=100, null=False, blank=False)
+    trpincode = models.CharField(max_length=100, null=False, blank=False)
+    trvillage = models.CharField(max_length=100, null=False, blank=False)
+    trtaluk = models.CharField(max_length=100, null=False, blank=False)
+    licencenumber = models.CharField(max_length=100, null=False, blank=False)
+    licencefrom = models.DateTimeField(null=False, blank=False)
+    licenceto = models.DateTimeField(null=False, blank=False)

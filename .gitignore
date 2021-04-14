@@ -11,3 +11,6 @@ db.sqlite3
 .idea/*
 migrations
 IORTO/__pycache__
+static
+registration/migrations
+registration/__init__.py
