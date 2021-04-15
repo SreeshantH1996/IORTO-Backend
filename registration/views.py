@@ -168,6 +168,13 @@ class ApplicationForNewLicence(APIView):
             user = StandUser.objects.filter(id=data.get('user_id')).first()
             if user:
                 print(user)
+                if user.district != data.get("district"):
+                    return Response({
+                        'data': {
+                            'message': "You need to enter same district on the registrations from!",
+                            'status': False
+                        }
+                    })
                 if LicenceApplication.objects.filter(user=user).exists():
                     application = LicenceApplication.objects.filter(user=user).first()
                     application.user = user
@@ -541,6 +548,13 @@ class LicenceRenewalApplicationAPI(APIView):
             data = request.data
             user = StandUser.objects.filter(id=data.get("user_id")).first()
             if user:
+                if user.district != data.get("district"):
+                    return Response({
+                        'data': {
+                            'message': "You need to enter same district on the registrations from!",
+                            'status': False
+                        }
+                    })
                 if LicenceRenewalApplication.objects.filter(user=user).exists():
                     application = LicenceRenewalApplication.objects.filter(user=user).first()
                     application.district = data.get("district")
@@ -796,6 +810,60 @@ class RTORegistration(APIView):
                 return Response({
                     'data': {
                         'message': "No valid ID created for the district, Please contact admin",
+                        'status': False
+                    }
+                })
+        except Exception as e:
+            return Response({
+                'data': {
+                    'message': f'Exception occured - {str(e)}',
+                    'status': False
+                }
+            })
+
+
+class UserListForRTO(APIView):
+    def get(self, request):
+        try:
+            user_list = StandUser.objects.all()
+            user_serializer = UserSerializerforRTO(user_list, many=True)
+            return Response({
+                'data': {
+                    'data': user_serializer.data,
+                    'message': "Data fetched successfully",
+                    'status': True
+                }
+            })
+        except Exception as e:
+            return Response({
+                'data': {
+                    'message': f'Exception occured - {str(e)}',
+                    'status': False
+                }
+            })
+
+
+class LicenceRenewalListRto(APIView):
+
+    def post(self, request):
+        try:
+            data = request.data
+            rto = RtoOfficer.objects.filter(id=data.get("user_id")).first()
+            if rto:
+                licence_renewal = LicenceRenewalApplication.objects.filter(district=rto.district)
+                renewal_serializer = LicenceRenewalSerializer(licence_renewal, many=True)
+                return Response({
+                    'data': {
+                        'district':rto.district,
+                        'data': renewal_serializer.data,
+                        'message': "Data fetched successfully",
+                        'status': True
+                    }
+                })
+            else:
+                return Response({
+                    'data': {
+                        'message': "Not a valid RTO id found, Please contact admin",
                         'status': False
                     }
                 })

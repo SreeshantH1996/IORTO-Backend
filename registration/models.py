@@ -30,8 +30,8 @@ user_status = [
 class StandUser(models.Model):
     name = models.CharField(max_length=50, null=False, blank=False)
     address = models.CharField(max_length=500, null=False, blank=False, default="test")
-    age = models.IntegerField(null=False, blank=False, default="1")
-    phnumber = models.CharField(max_length=10, null=True, blank=True)
+    age = models.CharField(max_length=50,null=False, blank=False, default="1")
+    phnumber = models.CharField(max_length=50, null=True, blank=True)
     district = models.CharField(choices=district_choices, verbose_name='Order Status', max_length=50)
     username = models.CharField(max_length=50, unique=True, null=False, blank=False)
     password = models.CharField(max_length=50, null=False, blank=False)

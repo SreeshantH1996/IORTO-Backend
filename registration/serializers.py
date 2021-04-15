@@ -48,4 +48,25 @@ class UserRenewalDataSerializer(serializers.ModelSerializer):
 class RtoAdminSerializer(serializers.ModelSerializer):
     class Meta:
         model = RtoOfficer
-        fields = ["district", "officerid","id"]
+        fields = ["district", "officerid", "id"]
+
+
+class UserSerializerforRTO(serializers.ModelSerializer):
+    class Meta:
+        model = StandUser
+        fields = ["district", "name", "id", "phnumber", "user_status"]
+
+
+class LicenceRenewalSerializer(serializers.ModelSerializer):
+    user = serializers.SerializerMethodField()
+    renewal_status = serializers.SerializerMethodField()
+
+    class Meta:
+        model = LicenceRenewalApplication
+        fields = "__all__"
+
+    def get_user(self,obj):
+        return obj.user.name
+
+    def get_renewal_status(self,obj):
+        return obj.user.renewal_status

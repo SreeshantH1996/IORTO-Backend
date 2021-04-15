@@ -26,5 +26,7 @@ urlpatterns = [
     url(r'^rto_delete/$', views.DeleteRtoOfficer.as_view(), name="rto_delete"),
 
     url(r'^rto_registration/$', views.RTORegistration.as_view(), name="rto_registration"),
+    url(r'^user_list/$', views.UserListForRTO.as_view(), name="user_list"),
+    url(r'^renewal_list/$', views.LicenceRenewalListRto.as_view(), name="renewal_list"),
 
 ]
