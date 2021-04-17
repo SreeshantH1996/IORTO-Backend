@@ -54,19 +54,54 @@ class RtoAdminSerializer(serializers.ModelSerializer):
 class UserSerializerforRTO(serializers.ModelSerializer):
     class Meta:
         model = StandUser
-        fields = ["district", "name", "id", "phnumber", "user_status"]
+        fields = ["district", "name", "id", "phnumber", "user_status", "renewal_status"]
 
 
 class LicenceRenewalSerializer(serializers.ModelSerializer):
     user = serializers.SerializerMethodField()
     renewal_status = serializers.SerializerMethodField()
+    status = serializers.SerializerMethodField()
+    dob = serializers.SerializerMethodField()
+    licencefrom = serializers.SerializerMethodField()
+    licenceto = serializers.SerializerMethodField()
 
     class Meta:
         model = LicenceRenewalApplication
         fields = "__all__"
 
-    def get_user(self,obj):
+    def get_user(self, obj):
         return obj.user.name
 
-    def get_renewal_status(self,obj):
+    def get_renewal_status(self, obj):
         return obj.user.renewal_status
+
+    def get_dob(self, obj):
+        return obj.dob.strftime("%Y-%m-%d")
+
+    def get_licenceto(self, obj):
+        return obj.licenceto.strftime("%Y-%m-%d")
+
+    def get_licencefrom(self, obj):
+        return obj.licencefrom.strftime("%Y-%m-%d")
+
+    def get_status(self, obj):
+        return obj.user.user_status
+
+
+class LicenceApplicationSerializer(serializers.ModelSerializer):
+    user = serializers.SerializerMethodField()
+    status = serializers.SerializerMethodField()
+    dob = serializers.SerializerMethodField()
+
+    class Meta:
+        model = LicenceApplication
+        fields = "__all__"
+
+    def get_user(self, obj):
+        return obj.user.name
+
+    def get_dob(self, obj):
+        return obj.dob.strftime("%Y-%m-%d")
+
+    def get_status(self, obj):
+        return obj.user.user_status

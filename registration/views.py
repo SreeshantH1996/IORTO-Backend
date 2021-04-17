@@ -380,11 +380,16 @@ class GetUserStatus(APIView):
         try:
             data = request.data
             user = StandUser.objects.filter(id=data.get("user_id")).first()
+            renew_application = LicenceRenewalApplication.objects.filter(user=user).first()
+            new_application = LicenceApplication.objects.filter(user=user).first()
             if user:
                 return Response({
                     'data': {
                         'user_status': user.user_status,
                         'renewal_status': user.renewal_status,
+                        'renewal_payment_status': renew_application.payment_status if renew_application else "",
+                        'new_payment_status': new_application.payment_status if new_application else "",
+                        'renew_reason': renew_application.reasonforrejecting if renew_application else "",
                         'message': f'Status fetched successfully',
                         'status': True
                     }
@@ -415,9 +420,15 @@ class UserStatusUpdate(APIView):
                 if user.user_status == "Documents Uploaded":
                     user.user_status = data.get("status")
                     user.save()
+                    application = LicenceApplication.objects.filter(user=user).first()
+                    application.payment_status = "Success"
+                    application.save()
                 elif user.renewal_status == "Documents Uploaded":
                     user.renewal_status = data.get("status")
                     user.save()
+                    application = LicenceRenewalApplication.objects.filter(user=user).first()
+                    application.payment_status = "Success"
+                    application.save()
                 return Response({
                     'data': {
                         'user_status': user.user_status,
@@ -676,12 +687,15 @@ class GetStatusPageData(APIView):
         try:
             data = request.data
             user = StandUser.objects.filter(id=data.get("user_id")).first()
+            application = LicenceRenewalApplication.objects.filter(user=user).first()
             if user:
                 data = {
                     "name": user.name,
                     "address": user.address,
                     "phnumber": user.phnumber,
-                    "status": user.renewal_status
+                    "status": user.renewal_status,
+                    "reason": application.reasonforrejecting,
+                    "payment_status":application.payment_status,
                 }
                 return Response({
                     'data': {
@@ -785,8 +799,16 @@ class RTORegistration(APIView):
             data = request.data
             district = data.get("district")
             rto_id = data.get("rtoid")
+            if RtoOfficer.objects.filter(username=data.get("username")).exists():
+                return Response({
+                    'data': {
+                        'message': f'Officer already exists for the {data.get("username")}',
+                        'status': False
+                    }
+                })
             rto_entry = RtoOfficer.objects.filter(district=district).first()
             if rto_entry:
+
                 if rto_entry.officerid == rto_id:
                     rto_entry.name = data.get("name")
                     rto_entry.phnumber = data.get("phnumber")
@@ -825,7 +847,7 @@ class RTORegistration(APIView):
 class UserListForRTO(APIView):
     def get(self, request):
         try:
-            user_list = StandUser.objects.all()
+            user_list = StandUser.objects.all().order_by("district")
             user_serializer = UserSerializerforRTO(user_list, many=True)
             return Response({
                 'data': {
@@ -854,7 +876,7 @@ class LicenceRenewalListRto(APIView):
                 renewal_serializer = LicenceRenewalSerializer(licence_renewal, many=True)
                 return Response({
                     'data': {
-                        'district':rto.district,
+                        'district': rto.district,
                         'data': renewal_serializer.data,
                         'message': "Data fetched successfully",
                         'status': True
@@ -865,6 +887,190 @@ class LicenceRenewalListRto(APIView):
                     'data': {
                         'message': "Not a valid RTO id found, Please contact admin",
                         'status': False
+                    }
+                })
+        except Exception as e:
+            return Response({
+                'data': {
+                    'message': f'Exception occured - {str(e)}',
+                    'status': False
+                }
+            })
+
+
+class GetRenewalApplicationDetials(APIView):
+    def post(self, request):
+        try:
+            data = request.data
+            print(data)
+            application = LicenceRenewalApplication.objects.filter(id=data.get("app_id")).first()
+            user = application.user
+            document_list = UserDocuments.objects.filter(user=user).first()
+            other_documents = OtherDocuments.objects.filter(user=user)
+            print(application.user.id)
+            print(user)
+            if application.user.id == user.id:
+                application_serializer = LicenceRenewalSerializer(application)
+                document_serializer = DocumentSerializer(document_list)
+                other_serializer = OtherDocumentSerializer(other_documents, many=True)
+                return Response({
+                    'data': {
+                        'application_details': application_serializer.data,
+                        'documents': document_serializer.data,
+                        'other_documents': other_serializer.data,
+                        'message': "Data fetched successfully",
+                        'status': True
+                    }
+                })
+            return Response({
+                'data': {
+                    'message': "Not a valid user found, Please contact admin",
+                    'status': False
+                }
+            })
+        except Exception as e:
+            return Response({
+                'data': {
+                    'message': f'Exception occured - {str(e)}',
+                    'status': False
+                }
+            })
+
+
+class RtoStatusChange(APIView):
+    def post(self, request):
+        try:
+            data = request.data
+            type = data.get("type")
+            application = []
+            if type == "new":
+                application = LicenceApplication.objects.filter(id=data.get("user_id")).first()
+            elif type == "renewal":
+                application = LicenceRenewalApplication.objects.filter(id=data.get("user_id")).first()
+            if application:
+                user = application.user
+                application.reasonforrejecting = data.get("reasonforrejecting")
+                application.save()
+                if type == "new":
+                    user.user_status = data.get("renewal_status")
+                elif type == "renewal":
+                    user.renewal_status = data.get("renewal_status")
+                user.save()
+                return Response({
+                    'data': {
+                        'message': "Data Updated successfully successfully",
+                        'status': True
+                    }
+                })
+            return Response({
+                'data': {
+                    'message': "Not a valid Application found",
+                    'status': False
+                }
+            })
+        except Exception as e:
+            return Response({
+                'data': {
+                    'message': f'Exception occured - {str(e)}',
+                    'status': False
+                }
+            })
+
+
+class LicenceApplicationListRto(APIView):
+
+    def post(self, request):
+        try:
+            data = request.data
+            rto = RtoOfficer.objects.filter(id=data.get("user_id")).first()
+            if rto:
+                licence_application = LicenceApplication.objects.filter(district=rto.district)
+                renewal_serializer = LicenceApplicationSerializer(licence_application, many=True)
+                return Response({
+                    'data': {
+                        'district': rto.district,
+                        'data': renewal_serializer.data,
+                        'message': "Data fetched successfully",
+                        'status': True
+                    }
+                })
+            else:
+                return Response({
+                    'data': {
+                        'message': "Not a valid RTO id found, Please contact admin",
+                        'status': False
+                    }
+                })
+        except Exception as e:
+            return Response({
+                'data': {
+                    'message': f'Exception occured - {str(e)}',
+                    'status': False
+                }
+            })
+
+
+class GetNewApplicationDetails(APIView):
+    def post(self, request):
+        try:
+            data = request.data
+            print(data)
+            application = LicenceApplication.objects.filter(id=data.get("app_id")).first()
+            user = application.user
+            document_list = UserDocuments.objects.filter(user=user).first()
+            other_documents = OtherDocuments.objects.filter(user=user)
+            print(application.user.id)
+            print(user)
+            if application.user.id == user.id:
+                application_serializer = ApplicationDetails(application)
+                document_serializer = DocumentSerializer(document_list)
+                other_serializer = OtherDocumentSerializer(other_documents, many=True)
+                return Response({
+                    'data': {
+                        'application_details': application_serializer.data,
+                        'documents': document_serializer.data,
+                        'other_documents': other_serializer.data,
+                        'message': "Data fetched successfully",
+                        'status': True
+                    }
+                })
+            return Response({
+                'data': {
+                    'message': "Not a valid user found, Please contact admin",
+                    'status': False
+                }
+            })
+        except Exception as e:
+            return Response({
+                'data': {
+                    'message': f'Exception occured - {str(e)}',
+                    'status': False
+                }
+            })
+
+
+class GetNewStatusPageData(APIView):
+    def post(self, request):
+        try:
+            data = request.data
+            user = StandUser.objects.filter(id=data.get("user_id")).first()
+            application = LicenceApplication.objects.filter(user=user).first()
+            print(application)
+            print("test")
+            if user:
+                data = {
+                    "name": user.name,
+                    "address": user.address,
+                    "phnumber": user.phnumber,
+                    "status": user.user_status,
+                    "reason": application.reasonforrejecting,
+                    "payment_status": application.payment_status
+                }
+                return Response({
+                    'data': {
+                        'data': data,
+                        'message': f'Data fetch successfully',
+                        'status': True
                     }
                 })
         except Exception as e:

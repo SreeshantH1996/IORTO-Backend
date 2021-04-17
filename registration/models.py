@@ -77,6 +77,9 @@ class LicenceApplication(models.Model):
     trvillage = models.CharField(max_length=100, null=False, blank=False)
     trtaluk = models.CharField(max_length=100, null=False, blank=False)
     classofvehicle = models.CharField(max_length=100, null=False, blank=False)
+    reasonforrejecting = models.CharField(max_length=100, null=True, blank=True)
+    payment_status = models.CharField(max_length=50, null=True, blank=True)
+
 
 
 class UserDocuments(models.Model):
@@ -125,3 +128,5 @@ class LicenceRenewalApplication(models.Model):
     licencenumber = models.CharField(max_length=100, null=False, blank=False)
     licencefrom = models.DateTimeField(null=False, blank=False)
     licenceto = models.DateTimeField(null=False, blank=False)
+    reasonforrejecting = models.CharField(max_length=100, null=True, blank=True)
+    payment_status = models.CharField(max_length=50, null=True, blank=True)

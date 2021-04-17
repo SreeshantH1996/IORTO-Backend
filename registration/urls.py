@@ -28,5 +28,11 @@ urlpatterns = [
     url(r'^rto_registration/$', views.RTORegistration.as_view(), name="rto_registration"),
     url(r'^user_list/$', views.UserListForRTO.as_view(), name="user_list"),
     url(r'^renewal_list/$', views.LicenceRenewalListRto.as_view(), name="renewal_list"),
+    url(r'^renewal_application/$', views.GetRenewalApplicationDetials.as_view(), name="renewal_application"),
+    url(r'^rto_status_change/$', views.RtoStatusChange.as_view(), name="rto_status_change"),
+
+    url(r'^application_list/$', views.LicenceApplicationListRto.as_view(), name="application_list"),
+    url(r'^application_detials/$', views.GetNewApplicationDetails.as_view(), name="application_detials"),
+    url(r'^get_new_status_data/$', views.GetNewStatusPageData.as_view(), name="get_new_status_data"),
 
 ]
